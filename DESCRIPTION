@@ -1,0 +1,29 @@
+Type: Package
+Package: marketsimulatr
+Title: A Package For Simulating A Continuous-Time, Stochastic, Double
+    Auction
+Version: 0.1.0
+Author: Scott McDonald
+Maintainer: Scott McDonald <mcdons22@gmail.com>
+Description: This package implements a simple continuous-time, stochastic,
+    double auction. Market and limit orders are submitted (and cancelled)
+    randomly. If market orders cannot be filled, a market maker
+    intervenes.
+License: file LICENSE
+Imports: 
+    data.table (>= 1.14.0),
+    plyr (>= 1.8.6),
+    quantmod (>= 0.4.18),
+    usethis (>= 2.0.1),
+    xts (>= 0.12.1)
+Suggests: 
+    attachment (>= 0.2.1),
+    knitr (>= 1.31),
+    rmarkdown (>= 2.7),
+    styler (>= 1.4.0)
+VignetteBuilder: 
+    knitr
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1

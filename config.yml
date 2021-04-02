@@ -1,0 +1,38 @@
+default:
+  start_price: 1.20
+  price_limit: 2
+  price_band: 5
+  tick_size: 0.0001
+  market_buy: 1
+  market_sell: 1
+  bid_order_ratio: 0.2
+  ask_order_ratio: 0.2
+  cancel_bid: 0.8
+  cancel_ask: 0.8
+  days: 10
+
+test:
+  start_price: 1.20
+  price_limit: 2
+  price_band: 5
+  tick_size: 0.0001
+  market_buy: 1
+  market_sell: 1
+  bid_order_ratio: 0.2
+  ask_order_ratio: 0.2
+  cancel_bid: 0.8
+  cancel_ask: 0.8
+  days: 1
+
+production:
+  start_price: 1.20
+  price_limit: 2
+  price_band: 5
+  tick_size: 0.0001
+  market_buy: 1
+  market_sell: 1
+  bid_order_ratio: 0.2
+  ask_order_ratio: 0.2
+  cancel_bid: 0.8
+  cancel_ask: 0.8
+  days: 28

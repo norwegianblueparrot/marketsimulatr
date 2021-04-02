@@ -1,0 +1,19 @@
+---
+title: "Simulating a Continuous-Time, Stochastic, Double-Auction Market"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Simulating a Continuous-Time, Stochastic, Double-Auction Market}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(marketsimulatr)
+```
