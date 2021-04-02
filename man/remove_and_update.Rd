@@ -4,10 +4,10 @@
 \alias{remove_and_update}
 \title{Title}
 \usage{
-remove_and_update(order.book, remove.rows, next.slot)
+remove_and_update(order_book, remove_rows, next_slot)
 }
 \arguments{
-\item{next.slot}{}
+\item{next_slot}{}
 }
 \value{
 

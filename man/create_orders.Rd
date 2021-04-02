@@ -5,18 +5,18 @@
 \title{create_orders}
 \usage{
 create_orders(
-  time.stamp,
-  order.number,
-  market.sell,
-  market.buy,
-  limit.ask,
-  limit.bid,
-  cancel.bid,
-  cancel.ask
+  time_stamp,
+  order_number,
+  market_sell,
+  market_buy,
+  limit_ask,
+  limit_bid,
+  cancel_bid,
+  cancel_ask
 )
 }
 \arguments{
-\item{cancel.ask}{}
+\item{cancel_ask}{}
 }
 \value{
 

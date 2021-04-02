@@ -12,6 +12,7 @@ Description: This package implements a simple continuous-time, stochastic,
 License: file LICENSE
 Imports: 
     data.table (>= 1.14.0),
+    glue (>= 1.4.2),
     plyr (>= 1.8.6),
     quantmod (>= 0.4.18),
     usethis (>= 2.0.1),

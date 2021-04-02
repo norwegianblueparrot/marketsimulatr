@@ -4,10 +4,10 @@
 \alias{calculate_measures}
 \title{calculate_measures}
 \usage{
-calculate_measures(order.book, fill.times, num.orders)
+calculate_measures(order_book, fill_times, num_orders)
 }
 \arguments{
-\item{num.orders}{}
+\item{num_orders}{}
 }
 \value{
 

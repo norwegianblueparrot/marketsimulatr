@@ -1,6 +1,6 @@
 # This code is based on some of the work presented in:
 # Algorithmic Trading: Model of Execution Probability and Order Placement Strategy - Yingsaeree, Ph.D. Thesis, 2012
-cat("\f")
+cat("\014")
 devtools::load_all()
 
 # select config
@@ -47,7 +47,7 @@ n_events <- n_minutes * total_orders
 
 start_time <- Sys.time()
 
-simulation.results <- marketsimulatr::create_order_book(
+simulation_results <- marketsimulatr::create_order_book(
   start_price,
   price_limit,
   price_band,

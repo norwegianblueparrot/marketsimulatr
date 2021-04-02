@@ -5,17 +5,17 @@
 \title{fill_order}
 \usage{
 fill_order(
-  market.order,
-  order.book,
+  market_order,
+  order_book,
   record,
-  current.price,
-  tick.size,
-  next.order.position,
-  cf.price
+  current_price,
+  tick_size,
+  next_order_position,
+  mm_price
 )
 }
 \arguments{
-\item{cf.price}{}
+\item{mm_price}{}
 }
 \value{
 

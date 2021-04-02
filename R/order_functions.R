@@ -89,7 +89,9 @@ create_order_book <- function(start_price,
   while (event_count < n_events) {
     event_count <- event_count + 1
 
-    cat("Event: ", event_count, "\n")
+    message(glue::glue("Event: {event_count}"))
+    message(glue::glue("Current price is: {current_price}"))
+
     # call function to create an order for the current iteration - can be one of six order_types, each with its own probability
     # sent current_time as time_stamp
     # loop iteration is used as an order ID
@@ -103,11 +105,12 @@ create_order_book <- function(start_price,
       cancel_ask = cancel_ask,
       cancel_bid = cancel_bid
     )
+
     # update current_time to reflect order time (order time follows Poisson process)
     current_time <- zoo::index(current_order)
     order_size <- as.integer(current_order$order_size)
 
-    # Market maker intervenest @ 5% higher/lower than market price
+    # Market maker intervenes0 @ 5% higher/lower than market price
     mm_buy <- plyr::round_any(current_price * 0.995, tick_size, f = floor)
     mm_sell <- plyr::round_any(current_price * 1.005, tick_size, f = ceiling)
 
@@ -144,8 +147,8 @@ create_order_book <- function(start_price,
       order_record[event_count, ":="(
         submitted_time = current_time,
         order_id = as.integer(event_count),
-        order_type = order_type,
-        order_size = as.integer(order_size),
+        order_type = ..order_type,
+        order_size = as.integer(..order_size),
         order_price = p,
         order_distance = ceiling((abs(best_ask - p) / tick_size))
       )]
@@ -155,7 +158,7 @@ create_order_book <- function(start_price,
       bid_order_book[next_bid_slot, ":="(
         submitted_time = current_time,
         order_id = as.integer(event_count),
-        order_size = order_size,
+        order_size = ..order_size,
         order_price = p
       )]
 
@@ -169,8 +172,8 @@ create_order_book <- function(start_price,
       next_bid_slot <- next_bid_slot + 1
     } else if (current_order$order_type == 2) {
       order_type <- "limit_ask"
-      # Limit ask orders are uniformally placed in the price classes from (p_b + 1*tick_size) to(p_b + price_band*tick_size).
-      # when p_b is between (price_limit - price_band*tick_size + tick_size) and price_limit, the admissable ask price interval is restricted.
+      # Limit ask orders are informally placed in the price classes from (p_b + 1*tick_size) to(p_b + price_band*tick_size).
+      # when p_b is between (price_limit - price_band*tick_size + tick_size) and price_limit, the admissible ask price interval is restricted.
       if (best_bid == 0) {
         if (current_price > price_limit - (price_band * tick_size)) {
           p <- current_price + (sample((as.integer((price_limit - current_price) / tick_size) + 1), 1) - 1) * tick_size
@@ -193,8 +196,8 @@ create_order_book <- function(start_price,
       order_record[event_count, ":="(
         submitted_time = current_time,
         order_id = as.integer(event_count),
-        order_type = order_type,
-        order_size = as.integer(order_size),
+        order_type = ..order_type,
+        order_size = as.integer(..order_size),
         order_price = p,
         order_distance = ceiling((abs(best_bid - p) / tick_size))
       )]
@@ -204,7 +207,7 @@ create_order_book <- function(start_price,
       ask_order_book[next_ask_slot, ":="(
         submitted_time = current_time,
         order_id = as.integer(event_count),
-        order_size = order_size,
+        order_size = ..order_size,
         order_price = p
       )]
 
@@ -222,8 +225,8 @@ create_order_book <- function(start_price,
       order_record[event_count, ":="(
         submitted_time = current_time,
         order_id = as.integer(event_count),
-        order_type = order_type,
-        order_size = as.integer(order_size),
+        order_type = ..order_type,
+        order_size = as.integer(..order_size),
         order_price = NA_integer_
       )]
       if (best_ask != 0) {
@@ -251,7 +254,7 @@ create_order_book <- function(start_price,
         }
       } else {
         # order cannot be filled from order book - Market maker intervenes
-        cat("Market maker match market buy.")
+        message("Market maker match market buy.")
         order_record[event_count, ":="(
           fill_price = list(mm_sell),
           order_price = mm_sell,
@@ -266,8 +269,8 @@ create_order_book <- function(start_price,
       order_record[event_count, ":="(
         submitted_time = current_time,
         order_id = as.integer(event_count),
-        order_type = order_type,
-        order_size = as.integer(order_size),
+        order_type = ..order_type,
+        order_size = as.integer(..order_size),
         order_price = NA_integer_
       )]
 
@@ -297,7 +300,7 @@ create_order_book <- function(start_price,
           )
         }
       } else {
-        cat("Market maker match market sell.")
+        message("Market maker match market sell.")
         # update order_record
         order_record[event_count, ":="(
           fill_price = list(mm_buy),
@@ -319,7 +322,7 @@ create_order_book <- function(start_price,
         order_record[event_count, ":="(
           submitted_time = current_time,
           order_id = as.integer(event_count),
-          order_type = order_type,
+          order_type = ..order_type,
           order_size = NA_integer_,
           order_price = NA_real_,
           order_distance = NA_integer_
@@ -344,7 +347,7 @@ create_order_book <- function(start_price,
         order_record[event_count, ":="(
           submitted_time = current_time,
           order_id = as.integer(event_count),
-          order_type = order_type,
+          order_type = ..order_type,
           order_size = NA_integer_,
           order_price = NA_real_,
           order_distance = NA_integer_
@@ -374,7 +377,6 @@ create_order_book <- function(start_price,
     else {
       best_ask <- ask_order_book$order_price[1]
     }
-    cat("\n")
   }
 
   # remove NA rows from orderbooks, plot price_series, and bundle everything together
@@ -455,14 +457,14 @@ create_orders <- function(time_stamp,
 
   # randomly create order size in 50,100,...,1000 chunks.
   # If cancellation order, set amount to Infinity (we will randomly cancel an order, regardless of size)
-  min_order <- 2500
-  max_order <- 7500
-  order_step <- 100
+  min_order <- config::get("min_order_size")
+  max_order <- config::get("max_order_size")
+  order_step <- config::get("order_step_size")
 
   if (order_type <= 4) {
     order_size <- seq(min_order, max_order, order_step)
-    rand.order <- sample(length(order_size), 1)
-    order_size <- order_size[rand.order]
+    rand_order <- sample(length(order_size), 1)
+    order_size <- order_size[rand_order]
   } else {
     order_size <- Inf # if a cancel order, set order size to Inf
   }
@@ -527,7 +529,7 @@ remove_and_update <- function(order_book, remove_rows, next_slot) {
   } else {
     # removing multiple rows here
     if (num_orders == (next_slot - 1)) {
-      order_book[remove_rows, names(order_book) := data.table(
+      order_book[remove_rows, names(order_book) := data.table::data.table(
         submitted_time = .POSIXct(rep(NA_real_, length = num_orders)),
         order_id = rep(NA_integer_, length = num_orders),
         order_size = rep(NA_integer_, length = num_orders),
@@ -547,7 +549,7 @@ remove_and_update <- function(order_book, remove_rows, next_slot) {
 
       # replace moved rows with NAs
       na.rows <- (next_slot - num_orders):((next_slot) - 1)
-      order_book[na.rows, names(order_book) := data.table(
+      order_book[na.rows, names(order_book) := data.table::data.table(
         submitted_time = .POSIXct(rep(NA_real_, length = num_orders)),
         order_id = rep(NA_integer_, length = num_orders),
         order_size = rep(NA_integer_, length = num_orders),
