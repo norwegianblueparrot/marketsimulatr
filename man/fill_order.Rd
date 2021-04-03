@@ -15,11 +15,23 @@ fill_order(
 )
 }
 \arguments{
-\item{mm_price}{}
+\item{market_order}{The order to be filled.}
+
+\item{order_book}{The order book}
+
+\item{record}{The trading record (which is tracking the traded prices)}
+
+\item{current_price}{The current trading price}
+
+\item{tick_size}{The minimum tick size allowed}
+
+\item{next_order_position}{The position of the next order in the book}
+
+\item{mm_price}{THe market makers price}
 }
 \value{
 
 }
 \description{
-fill_order
+Fill orders once available market depth is available.
 }

@@ -2,16 +2,20 @@
 % Please edit documentation in R/order_functions.R
 \name{remove_and_update}
 \alias{remove_and_update}
-\title{Title}
+\title{remove_and_update}
 \usage{
 remove_and_update(order_book, remove_rows, next_slot)
 }
 \arguments{
-\item{next_slot}{}
+\item{order_book}{The book to be updated}
+
+\item{remove_rows}{The orders to be removed (because order is canceller or order has been used to fill an order)}
+
+\item{next_slot}{The next orders in the book to be shifted upwards once the required orders are removed.}
 }
 \value{
 
 }
 \description{
-Title
+Remove orders from the limit books and update the available market depth.
 }

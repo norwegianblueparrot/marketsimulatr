@@ -1,0 +1,19 @@
+---
+title: "Analysing the Order Book"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Analysing the Order Book}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(marketsimulatr)
+```

@@ -61,4 +61,10 @@ orders to market orders in controlled by \code{bid_order_ratio} and \code{ask_or
 
 A minimum tick size can be specified. Order sizes are randomly generated - the sizes
 are multiples of a number specified in the config file.
+
+The models assumes that the best bid is lower than the best ask: p_b < p_a.
+If no orders are present in the book, the next bid, b, will be uniformly chosen in
+(p - price_band\emph{tick_size) <= b <= p,
+and the next ask will be placed in
+p <= a <= (p + price_band}tick_size),
 }

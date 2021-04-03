@@ -7,7 +7,11 @@
 calculate_measures(order_book, fill_times, num_orders)
 }
 \arguments{
-\item{num_orders}{}
+\item{order_book}{The order book to analyse.}
+
+\item{fill_times}{The fill time of the orders (optional).}
+
+\item{num_orders}{The number of orders to analyse (optional).}
 }
 \value{
 

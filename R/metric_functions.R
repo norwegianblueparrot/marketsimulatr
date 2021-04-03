@@ -1,13 +1,11 @@
 #' calculate_measures
 #'
-#' @param order_book
-#' @param fill_times
-#' @param num_orders
+#' @param order_book The order book to analyse.
+#' @param fill_times The fill time of the orders (optional).
+#' @param num_orders The number of orders to analyse (optional).
 #'
 #' @return
 #' @export
-#'
-#' @examples
 calculate_measures <- function(order_book, fill_times, num_orders) {
   # fill optional arguments if not present
   if (missing(num_orders)) {

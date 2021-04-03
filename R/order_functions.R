@@ -524,8 +524,6 @@ create_orders <- function(time_stamp,
 #'
 #' @return
 #' @export
-#'
-#' @examples
 remove_and_update <- function(order_book, remove_rows, next_slot) {
   # number of orders to remove
   num_orders <- length(remove_rows)
@@ -618,8 +616,6 @@ remove_and_update <- function(order_book, remove_rows, next_slot) {
 #'
 #' @return
 #' @export
-#'
-#' @examples
 fill_order <- function(market_order,
                        order_book,
                        record,

@@ -16,11 +16,33 @@ create_orders(
 )
 }
 \arguments{
-\item{cancel_ask}{}
+\item{time_stamp}{The time of the order}
+
+\item{order_number}{The order number (i.e. the event number in the simulation loop)}
+
+\item{market_sell}{The arrival intensity of market sell orders.}
+
+\item{market_buy}{The arrival intensity of market buy orders.}
+
+\item{limit_ask}{The arrival intensity of limit ask orders.}
+
+\item{limit_bid}{The arrival intensity of limit bid orders.}
+
+\item{cancel_bid}{The cancellation intensity of limit bid orders.}
+
+\item{cancel_ask}{The cancellation intensity of limit ask orders.
+
+This function creates orders. The order type is based on roulette wheel selection,
+where the "sizes" of the roulette wheel segments are the intensity rates of the the
+order types.
+
+These intensity rate is fed into a Poission distribution to create the timestamp of the order.
+
+The order size is created as a random multiple of some number (e.g. all order sizes are multiples of 50)}
 }
 \value{
 
 }
 \description{
-create_orders
+Generate orders based on roulette wheel selection.
 }
