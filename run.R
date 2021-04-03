@@ -4,7 +4,7 @@ cat("\014")
 devtools::load_all()
 
 # select config
-Sys.setenv("R_CONFIG_ACTIVE" = "test")
+Sys.setenv("R_CONFIG_ACTIVE" = "default")
 
 # current price
 start_price <- config::get("start_price")
@@ -64,3 +64,6 @@ end_time = Sys.time()
 print(difftime(end_time, start_time))
 
 marketsimulatr::plot_price_series(price_series = simulation_results$price_series, series_name = traded_price)
+
+order_survival_metrics <- simulation_results$order_record %>%
+  marketsimulatr::analyse_limit_orders()

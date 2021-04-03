@@ -15,3 +15,43 @@ plot_price_series <- function(price_series, series_name) {
     ggplot2::ggtitle("Traded Price Series") +
     ggplot2::theme_light()
 }
+
+#' plot_survival_curves
+#'
+#' @param results_matrix
+#'
+#' @return
+#' @export
+plot_survival_curves <- function(results_matrix) {
+  plot(
+    results_matrix[, 3],
+    col = "green",
+    type = "l",
+    lwd = 2,
+    lty = 4,
+    xlab = "Time [minutes]",
+    ylab = "Execution Probability",
+    main = "Comparison of Probability Approaches",
+    ylim = c(0, 1)
+  )
+
+  lines(results_matrix[, 4],
+    lwd = 2,
+    lty = 1,
+    col = "black"
+  )
+
+  lines(results_matrix[, 2],
+    lwd = 2,
+    lty = 2,
+    col = "blue"
+  )
+
+  legend(
+    "bottomright",
+    legend = c(expression(P[EPU](t)), expression(P[TTF](t)), expression(P[EPL](t))),
+    col = c("green", "black", "blue"),
+    lty = c(4, 1, 2),
+    lwd = c(2, 2, 2)
+  )
+}

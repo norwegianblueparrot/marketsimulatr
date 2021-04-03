@@ -702,13 +702,13 @@ fill_order <- function(market_order,
       fill_time <- zoo::index(market_order)
       for (i in unlist(filled_order_id))
       {
-        record[order_id == as.integer(i), ":="(fill_time = fill_time)]
+        record[order_id == as.integer(i), ":="(fill_time = ..fill_time)]
       }
     }
 
     if (!is.null(partial_filled_id)) {
       fill_time <- zoo::index(market_order)
-      record[order_id == as.integer(partial_filled_id), ":="(first_fill_time = fill_time)]
+      record[order_id == as.integer(partial_filled_id), ":="(first_fill_time = ..fill_time)]
     }
 
     # return the relevant values to update main simulation loop
