@@ -73,7 +73,7 @@ n_events <- n_minutes * total_orders
 Finally, the create_order_book function is called. This will return a price series of traded prices, as well as the full order book. The ask and bid limit order books are also returned.
 
 
-```{r create_order_book}
+```{r create_order_book, echo=FALSE}
 simulation_results <- marketsimulatr::create_order_book(
   start_price,
   price_limit,

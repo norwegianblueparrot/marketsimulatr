@@ -413,7 +413,6 @@ create_order_book <- function(start_price,
   # remove NA rows from orderbooks, plot price_series, and bundle everything together
   ask_order_book <- ask_order_book[!is.na(submitted_time)]
   bid_order_book <- bid_order_book[!is.na(submitted_time)]
-  quantmod::chartSeries(price_series, main = "Simulated Exchange Rate")
   return.list <- list(
     "price_series" = price_series,
     "order_record" = order_record,
