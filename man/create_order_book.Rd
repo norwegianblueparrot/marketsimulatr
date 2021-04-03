@@ -19,11 +19,46 @@ create_order_book(
 )
 }
 \arguments{
-\item{n_events}{}
+\item{start_price}{The starting price of the simulation.}
+
+\item{price_limit}{The maximum value the simulated price can attain.}
+
+\item{price_band}{The size of the interval around the current price within which new orders/prices will be generated.}
+
+\item{tick_size}{The minimum allowable price change.}
+
+\item{market_sell}{The arrival rate of market sell orders.}
+
+\item{market_buy}{The arrival rate of market buy orders.}
+
+\item{bid_order_ratio}{The ratio of limit bid orders to market bid orders.}
+
+\item{ask_order_ratio}{The ratio of limit ask orders to market ask orders.}
+
+\item{cancel_bid}{The cancel rate of limit bid orders.}
+
+\item{cancel_ask}{The cancel rate of limit ask orders.}
+
+\item{n_events}{The total number of trades to simulate.}
 }
 \value{
-
+A list containing the full order book, the remaining bid and ask books and the generated price series.
 }
 \description{
-create_order_book
+Create an order book based on a continuous-time, stochastic, double auction.
+}
+\details{
+Given a starting price, orders (limit and market) are generated at random times
+using a Poisson distribution. Prices are generated within an interval around the
+current trading price.
+
+Market orders are filled immediately. If insufficient market depth is available,
+a market maker will intervene. The market maker charges 5\% above/below the current
+price if it has to intervene.
+
+Limit orders are submitted, and some are cancelled randomly. The ratio of limit
+orders to market orders in controlled by \code{bid_order_ratio} and \code{ask_order_ratio}.
+
+A minimum tick size can be specified. Order sizes are randomly generated - the sizes
+are multiples of a number specified in the config file.
 }

@@ -4,7 +4,7 @@ cat("\014")
 devtools::load_all()
 
 # select config
-Sys.setenv("R_CONFIG_ACTIVE" = "test")
+Sys.setenv("R_CONFIG_ACTIVE" = "production")
 
 # current price
 start_price <- config::get("start_price")

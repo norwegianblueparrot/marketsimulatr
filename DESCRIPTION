@@ -18,6 +18,7 @@ Imports:
     usethis (>= 2.0.1),
     xts (>= 0.12.1)
 Suggests: 
+    spelling (>= 2.2),
     attachment (>= 0.2.1),
     knitr (>= 1.31),
     rmarkdown (>= 2.7),
@@ -28,3 +29,4 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+Language: en-US

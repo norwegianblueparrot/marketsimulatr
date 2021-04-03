@@ -1,21 +1,44 @@
 #' create_order_book
 #'
-#' @param start_price
-#' @param price_limit
-#' @param price_band
-#' @param tick_size
-#' @param market_sell
-#' @param market_buy
-#' @param bid_order_ratio
-#' @param ask_order_ratio
-#' @param cancel_bid
-#' @param cancel_ask
-#' @param n_events
+#' Create an order book based on a continuous-time, stochastic, double auction.
 #'
-#' @return
+#' Given a starting price, orders (limit and market) are generated at random times
+#' using a Poisson distribution. Prices are generated within an interval around the
+#' current trading price.
+#'
+#' Market orders are filled immediately. If insufficient market depth is available,
+#' a market maker will intervene. The market maker charges 5% above/below the current
+#' price if it has to intervene.
+#'
+#' Limit orders are submitted, and some are cancelled randomly. The ratio of limit
+#' orders to market orders in controlled by `bid_order_ratio` and `ask_order_ratio`.
+#'
+#' A minimum tick size can be specified. Order sizes are randomly generated - the sizes
+#' are multiples of a number specified in the config file.
+#'
+#' The models assumes that the best bid is lower than the best ask: p_b < p_a.
+#' If no orders are present in the book, the next bid, b, will be uniformly chosen in
+#' (p - price_band*tick_size) <= b <= p,
+#' and the next ask will be placed in
+#' p <= a <= (p + price_band*tick_size),
+# 'where p is the price of the last trade.
+#
+# The trade price is calculated as a weighted average of the limit order prices used to fill it.
+#'
+#' @param start_price The starting price of the simulation.
+#' @param price_limit The maximum value the simulated price can attain.
+#' @param price_band The size of the interval around the current price within which new orders/prices will be generated.
+#' @param tick_size The minimum allowable price change.
+#' @param market_sell The arrival rate of market sell orders.
+#' @param market_buy The arrival rate of market buy orders.
+#' @param bid_order_ratio The ratio of limit bid orders to market bid orders.
+#' @param ask_order_ratio The ratio of limit ask orders to market ask orders.
+#' @param cancel_bid The cancel rate of limit bid orders.
+#' @param cancel_ask The cancel rate of limit ask orders.
+#' @param n_events The total number of trades to simulate.
+#'
+#' @return A list containing the full order book, the remaining bid and ask books and the generated price series.
 #' @export
-#'
-#' @examples
 create_order_book <- function(start_price,
                               price_limit,
                               price_band,
@@ -111,8 +134,10 @@ create_order_book <- function(start_price,
     order_size <- as.integer(current_order$order_size)
 
     # Market maker intervenes0 @ 5% higher/lower than market price
-    mm_buy <- plyr::round_any(current_price * 0.995, tick_size, f = floor)
-    mm_sell <- plyr::round_any(current_price * 1.005, tick_size, f = ceiling)
+    mm_buy <-
+      plyr::round_any(current_price * 0.995, tick_size, f = floor)
+    mm_sell <-
+      plyr::round_any(current_price * 1.005, tick_size, f = ceiling)
 
     # deal with orders
     # we always assume that the best bid is lower than the best ask: p_b < p_a.
@@ -122,6 +147,7 @@ create_order_book <- function(start_price,
     # p <= a <= (p + price_band*tick_size),
     # where p is the price of the last trade.
 
+    # TODO this could probably be done with a switch/case_when, with a function per order-type
     if (current_order$order_type == 1) {
       order_type <- "limit_bid"
       # limit buy orders are uniformly placed in the price classes
@@ -137,7 +163,8 @@ create_order_book <- function(start_price,
         if (best_ask == tick_size) {
           next # no order possible at this price (best bid and best ask have to separated by at least one tick & both positive)
         } else if (best_ask <= price_band * tick_size) {
-          p <- best_ask - sample((as.integer(best_ask / tick_size) - 1), 1) * tick_size
+          p <-
+            best_ask - sample((as.integer(best_ask / tick_size) - 1), 1) * tick_size
         } else {
           p <- best_ask - sample(price_band, 1) * tick_size
         }
@@ -176,7 +203,8 @@ create_order_book <- function(start_price,
       # when p_b is between (price_limit - price_band*tick_size + tick_size) and price_limit, the admissible ask price interval is restricted.
       if (best_bid == 0) {
         if (current_price > price_limit - (price_band * tick_size)) {
-          p <- current_price + (sample((as.integer((price_limit - current_price) / tick_size) + 1), 1) - 1) * tick_size
+          p <-
+            current_price + (sample((as.integer((price_limit - current_price) / tick_size) + 1), 1) - 1) * tick_size
         } else {
           p <- current_price + (sample((price_band + 1), 1) - 1) * tick_size
         }
@@ -184,8 +212,9 @@ create_order_book <- function(start_price,
         if (best_bid == price_limit) {
           next # no order possible at this price (best bid and best ask have to separated by at least one tick & both positive)
         } else if (best_bid > price_limit - (price_band * tick_size)) {
-          p <- best_bid + sample(as.integer((price_limit - best_bid) / tick_size), 1) *
-            tick_size
+          p <-
+            best_bid + sample(as.integer((price_limit - best_bid) / tick_size), 1) *
+              tick_size
         } else {
           p <- best_bid + sample(price_band, 1) * tick_size
         }
@@ -329,7 +358,8 @@ create_order_book <- function(start_price,
         )]
         # add cancellation time and update next available order book position
         order_record[order_id == cancelled_id, ":="(cancel_time = current_time)]
-        next_bid_slot <- marketsimulatr::remove_and_update(bid_order_book, cancel_number, next_bid_slot)
+        next_bid_slot <-
+          marketsimulatr::remove_and_update(bid_order_book, cancel_number, next_bid_slot)
       } else {
         event_count <- event_count - 1
         # next
@@ -354,7 +384,8 @@ create_order_book <- function(start_price,
         )]
         # add cancellation time and update next available order book position
         order_record[order_id == cancelled_id, ":="(cancel_time = current_time)]
-        next_ask_slot <- marketsimulatr::remove_and_update(ask_order_book, cancel_number, next_ask_slot)
+        next_ask_slot <-
+          marketsimulatr::remove_and_update(ask_order_book, cancel_number, next_ask_slot)
       } else {
         event_count <- event_count - 1
         # next
@@ -392,23 +423,30 @@ create_order_book <- function(start_price,
   return(return.list)
 }
 
-
-
 #' create_orders
 #'
-#' @param time_stamp
-#' @param order_number
-#' @param market_sell
-#' @param market_buy
-#' @param limit_ask
-#' @param limit_bid
-#' @param cancel_bid
-#' @param cancel_ask
+#' Generate orders based on roulette wheel selection.
+#'
+#' @param time_stamp The time of the order
+#' @param order_number The order number (i.e. the event number in the simulation loop)
+#' @param market_sell The arrival intensity of market sell orders.
+#' @param market_buy The arrival intensity of market buy orders.
+#' @param limit_ask The arrival intensity of limit ask orders.
+#' @param limit_bid The arrival intensity of limit bid orders.
+#' @param cancel_bid The cancellation intensity of limit bid orders.
+#' @param cancel_ask The cancellation intensity of limit ask orders.
+#'
+#' This function creates orders. The order type is based on roulette wheel selection,
+#' where the "sizes" of the roulette wheel segments are the intensity rates of the the
+#' order types.
+#'
+#' These intensity rate is fed into a Poission distribution to create the timestamp of the order.
+#'
+#' The order size is created as a random multiple of some number (e.g. all order sizes are multiples of 50)
 #'
 #' @return
 #' @export
 #'
-#' @examples
 create_orders <- function(time_stamp,
                           order_number,
                           market_sell,
@@ -418,7 +456,7 @@ create_orders <- function(time_stamp,
                           cancel_bid,
                           cancel_ask) {
   # This function creates orders randomly.
-  # Each type of order is genereated using a Poissonian arrival time with a rate specific to the order type
+  # Each type of order is generated using a Poissonian arrival time with a rate specific to the order type
 
   # Implementation based on:
   # Ergodic Transition in a Simple Model of the Continuous Double Auction - Radivojevic et  al., PLoS, 2014
@@ -427,13 +465,15 @@ create_orders <- function(time_stamp,
   # A Stochastic Model for Order Book Dynamics - Cont et al., Operations Research, 2010
 
   # these lines and the if-else block perform roulette wheel selection for order types
-  c <- market_sell + market_buy + limit_ask + limit_bid + cancel_bid + cancel_ask
+  c <-
+    market_sell + market_buy + limit_ask + limit_bid + cancel_bid + cancel_ask
   x <- runif(1)
 
   order_type <- numeric(length = 1)
   order_number <- order_number
   order_size <- numeric(length = 1)
 
+  # TODO change the numeric order_type to something a bit more sensible.
   if (x < limit_bid / c) {
     order_type <- 1
     t <- -log(runif(1)) / c
@@ -468,16 +508,19 @@ create_orders <- function(time_stamp,
   } else {
     order_size <- Inf # if a cancel order, set order size to Inf
   }
-  order_row <- xts::xts(cbind(order_number, order_type, order_size), order.by = t)
+  order_row <-
+    xts::xts(cbind(order_number, order_type, order_size), order.by = t)
   colnames(order_row) <- c("order_id", "order_type", "order_size")
   return(order_row)
 }
 
-#' Title
+#' remove_and_update
 #'
-#' @param order_book
-#' @param remove_rows
-#' @param next_slot
+#' Remove orders from the limit books and update the available market depth.
+#'
+#' @param order_book The book to be updated
+#' @param remove_rows The orders to be removed (because order is canceller or order has been used to fill an order)
+#' @param next_slot The next orders in the book to be shifted upwards once the required orders are removed.
 #'
 #' @return
 #' @export
@@ -563,13 +606,15 @@ remove_and_update <- function(order_book, remove_rows, next_slot) {
 
 #' fill_order
 #'
-#' @param market_order
-#' @param order_book
-#' @param record
-#' @param current_price
-#' @param tick_size
-#' @param next_order_position
-#' @param mm_price
+#' Fill orders once available market depth is available.
+#'
+#' @param market_order The order to be filled.
+#' @param order_book The order book
+#' @param record The trading record (which is tracking the traded prices)
+#' @param current_price The current trading price
+#' @param tick_size The minimum tick size allowed
+#' @param next_order_position The position of the next order in the book
+#' @param mm_price THe market makers price
 #'
 #' @return
 #' @export
@@ -608,7 +653,8 @@ fill_order <- function(market_order,
       )
 
       # remove orders from book as they have now been filled
-      next_order_position <- marketsimulatr::remove_and_update(order_book, 1:num_orders, next_order_position)
+      next_order_position <-
+        marketsimulatr::remove_and_update(order_book, 1:num_orders, next_order_position)
     } else {
       # need to find out how many shares from "worst" limit order are used in order fill/left over after fill.
       surplus <- sum(filled_orders$order_size) - current_size
@@ -634,11 +680,14 @@ fill_order <- function(market_order,
         order_book[1, ":="(order_size = surplus)]
       } else {
         # if any orders were filled add their IDs to a list
-        filled_order_id <- list(filled_orders[1:(num_orders - 1)]$order_id)
+        filled_order_id <-
+          list(filled_orders[1:(num_orders - 1)]$order_id)
         # get the ID of the partially filled order
-        partial_filled_id <- as.integer(filled_orders[num_orders]$order_id)
-        next_order_position <- marketsimulatr::remove_and_update(order_book, 1:(num_orders -
-          1), next_order_position)
+        partial_filled_id <-
+          as.integer(filled_orders[num_orders]$order_id)
+        next_order_position <-
+          marketsimulatr::remove_and_update(order_book, 1:(num_orders -
+            1), next_order_position)
         # update the available volume of the remaining best order
         order_book[1, ":="(order_size = surplus)]
       }
@@ -674,14 +723,30 @@ fill_order <- function(market_order,
     )
     return(return_list)
   } else {
-    message("Not enough volume. Market maker intervenes to fill order.", "\n")
+    message(
+      "Not enough volume. Market maker intervenes to fill order.",
+      "\n"
+    )
     available_orders <- order_book[1:(next_order_position - 1)]
     available_volume <- sum(available_orders$order_size)
-    required_volume <- as.integer(market_order$order_size) - available_volume
+    required_volume <-
+      as.integer(market_order$order_size) - available_volume
     # "add" a new limit order at Market maker's rate to fill the market order
-    available_orders <- rbind(available_orders, list(zoo::index(market_order), 0, as.integer(required_volume), mm_price))
+    available_orders <-
+      rbind(
+        available_orders,
+        list(
+          zoo::index(market_order),
+          0,
+          as.integer(required_volume),
+          mm_price
+        )
+      )
     market_price <- plyr::round_any(
-      weighted.mean(available_orders$order_price, available_orders$order_size),
+      weighted.mean(
+        available_orders$order_price,
+        available_orders$order_size
+      ),
       tick_size
     )
 
@@ -700,7 +765,12 @@ fill_order <- function(market_order,
     }
 
     # clear the order book
-    next_order_position <- marketsimulatr::remove_and_update(order_book, 1:(next_order_position - 1), next_order_position)
+    next_order_position <-
+      marketsimulatr::remove_and_update(
+        order_book,
+        1:(next_order_position - 1),
+        next_order_position
+      )
 
     return_list <- list(
       updated_price = market_price,
