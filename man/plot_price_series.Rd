@@ -4,7 +4,7 @@
 \alias{plot_price_series}
 \title{plot_series}
 \usage{
-plot_price_series(price_series)
+plot_price_series(price_series, series_name)
 }
 \arguments{
 \item{price_series}{The price series to be visualised.}
