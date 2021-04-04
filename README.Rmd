@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-The goal of marketsimulatr is to simulate a financial market with an active market maker. The package models a continuous-time, stochastic, double auction, where buyers and sellers randomly submit orders.
+The goal of marketsimulatr is to simulate a financial market with an active market maker. The package models a continuous, stochastic, double auction, where buyers and sellers randomly submit orders.
 
 Market and limit orders are allowed. If market orders are submitted, and sufficient market depth is available, a weighted average price is calculated. If there is insufficient market depth to fill market orders, the market maker intervenes, and offers a price 5% above/below the current best bid/ask. 
 

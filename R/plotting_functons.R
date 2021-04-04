@@ -5,7 +5,7 @@
 #' @return
 #' @export
 plot_price_series <- function(price_series, series_name) {
-  library(ggplot2)
+  library("ggplot2")
   price_series %>%
     zoo::fortify.zoo() %>%
     ggplot2::ggplot() +
@@ -20,7 +20,7 @@ plot_price_series <- function(price_series, series_name) {
 #'
 #' @param results_matrix
 #'
-#' @return
+#' @return A plot of survival curves
 #' @export
 plot_survival_curves <- function(results_matrix) {
   plot(

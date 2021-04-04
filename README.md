@@ -10,8 +10,8 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 <!-- badges: end -->
 
 The goal of marketsimulatr is to simulate a financial market with an
-active market maker. The package models a continuous-time, stochastic,
-double auction, where buyers and sellers randomly submit orders.
+active market maker. The package models a continuous, stochastic, double
+auction, where buyers and sellers randomly submit orders.
 
 Market and limit orders are allowed. If market orders are submitted, and
 sufficient market depth is available, a weighted average price is

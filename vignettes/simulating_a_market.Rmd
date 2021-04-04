@@ -1,8 +1,8 @@
 ---
-title: "Simulating a Continuous-Time, Stochastic, Double-Auction Market"
+title: "Simulating a Continuous, Stochastic, Double-Auction Market"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Simulating a Continuous-Time, Stochastic, Double-Auction Market}
+  %\VignetteIndexEntry{Simulating a Continuous, Stochastic, Double-Auction Market}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

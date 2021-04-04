@@ -45,7 +45,7 @@ create_order_book(
 A list containing the full order book, the remaining bid and ask books and the generated price series.
 }
 \description{
-Create an order book based on a continuous-time, stochastic, double auction.
+Create an order book based on a continuous, stochastic, double auction.
 }
 \details{
 Given a starting price, orders (limit and market) are generated at random times

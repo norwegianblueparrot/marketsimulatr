@@ -1,6 +1,6 @@
 #' create_order_book
 #'
-#' Create an order book based on a continuous-time, stochastic, double auction.
+#' Create an order book based on a continuous, stochastic, double auction.
 #'
 #' Given a starting price, orders (limit and market) are generated at random times
 #' using a Poisson distribution. Prices are generated within an interval around the

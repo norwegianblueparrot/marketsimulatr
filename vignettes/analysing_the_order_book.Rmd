@@ -18,3 +18,26 @@ knitr::opts_chunk$set(
 library(marketsimulatr)
 ```
 
+# Modelling Limit Order Survival Probabilities
+The historical data created by the simulator can be used to estimate the execution probability of a limit order. The execution probability is defined as the ratio of limit orders that are executed within a specified time limit to the total number of limit orders considered. 
+
+Using this definition, the execution probability can be computed using the time to fill information of the limit orders. Orders that are cancelled are assumed to be un-executed, and therefore have an infinite time to fill value. The time to fill values of a dataset containing $N$ limit orders are denoted by $TTF_1$, $TTF_2$, $\ldots$, $TTF_N$ with $TTF_i = \infty$ for un-executed/cancelled orders.
+
+The execution probability can be estimated by:
+
+$$\mathbb{P}_{EPL} (t)= \frac{\sum_{i=1}^N \mathbb{I} \left(TTF_{i} \leq t \right)}{N},$$
+where $\mathbb{I}$ is an indicator function. This metric will tend to underestimate the true probability of execution, as cancelled orders are included in the denominator $N$.
+
+As cancelled orders will tend to bias the execution probability it makes sense to adjust the metric for them. If we ignore the fact that we know, for example, that an order is cancelled after 10 minutes, this will obviously bias the probability distribution towards a higher execution probability. If we define the time to cancel of an order in an analogous fashion to the time to fill we have a sequence $TTC_1$, $TTC_2$, $\ldots$, $TTC_N$ with $TTC_i = \infty$ for un-executed/executed orders. We can define a new probability metric:
+
+$$\mathbb{P}_{EPU} (t) = \frac{\sum_{i = 1}^{N} \mathbb{I{ \left( TTF_i \leq t \right)}}}{\sum_{i = 1}^{N} \mathbb{I{ \left( TTC_i > t \right)}}},$$
+
+where the numerator is the number of limit orders executed at or before time $t$ and the denominator is the number of limit orders whose execution status is known at time $t$. This metric will tend to overestimate the real execution probability of a limit order, as it discards any information we have about cancelled orders beyond the specified time horizon $t$.
+
+A third probability metric can also be calculated using the Kaplan-Meier estimator. It is used in survival analysis to calculate the survival function from lifetime data. For example, in medical trials, the Kaplan-Meier estimator is used to measure the fraction of patients living for a certain amount of time after treatment. The Kaplan-Meier survival probability is calculated according to
+
+$$S(t) = \prod_{t_i < t} \frac{n_i - d_i}{n_i}$$
+
+where $n_i$ is the number of orders still active before time $t$ and $d_i$ is the number of executed orders at time $t$. As this models the probability of an order surviving beyond time $t$, the probability of execution is defined as
+
+$$\mathbb{P}_{TTF} (t) = 1-S(t).$$
